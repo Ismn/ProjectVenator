@@ -4,17 +4,17 @@ using System.Collections;
 public class FollowCamera : MonoBehaviour {
 
     public Transform target;
-    public float distance = 6.0f;
-    private float xSpeed = 60.0f;
-    private float ySpeed = 60.0f;
+    public float distance = 4.0f;
+    private float xSpeed = 50.0f;
+    private float ySpeed = 50.0f;
 
-    private float zSpeed = 10.0f;    
+    private float zSpeed = 40.0f;    
 
-    private float yMinLimit = -60.0f;
-    private float yMaxLimit = 60.0f;
+    private float yMinLimit = -75.0f;
+    private float yMaxLimit = 68.0f;
 
-    private float distanceMin = 4.0f;
-    private float distanceMax = 9.0f;
+    private float distanceMin = 2.0f;
+    private float distanceMax = 10.0f;
 
     float x = 0.0f;
     float y = 0.0f;
@@ -36,7 +36,7 @@ public class FollowCamera : MonoBehaviour {
             y = ClampAngle(y, yMinLimit, yMaxLimit);
 
             Quaternion rotation = Quaternion.Euler(y, x, 0);
-            Vector3 negDistance = new Vector3(0.0f, 0.0f, -distance);
+            Vector3 negDistance = new Vector3(0.0f, 2.0f, -distance);
             Vector3 position = rotation * negDistance + target.position;
 
             distance = Mathf.Clamp(distance - Input.GetAxis("Mouse ScrollWheel") * 5, distanceMin, distanceMax);
@@ -44,6 +44,7 @@ public class FollowCamera : MonoBehaviour {
             RaycastHit hit;
             if (Physics.Linecast(target.position, transform.position, out hit))
             {
+                //Debug.Log("Ray Hit!");
                 distance = Mathf.Lerp(distance, hit.distance, Time.deltaTime * zSpeed);
             }            
 
