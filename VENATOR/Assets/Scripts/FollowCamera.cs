@@ -3,23 +3,61 @@ using System.Collections;
 
 public class FollowCamera : MonoBehaviour {
 
-    private float turnSpeed = 5.0f;
-    public Transform playerShip;
-    private Vector3 offset;
-    private Vector3 offX;
-    private Vector3 offY;
+    public Transform target;
+    public float distance = 6.0f;
+    private float xSpeed = 60.0f;
+    private float ySpeed = 60.0f;
+
+    private float zSpeed = 10.0f;    
+
+    private float yMinLimit = -60.0f;
+    private float yMaxLimit = 60.0f;
+
+    private float distanceMin = 4.0f;
+    private float distanceMax = 9.0f;
+
+    float x = 0.0f;
+    float y = 0.0f;
 
     // Use this for initialization
-    void Start () {
-        offset = new Vector3(playerShip.position.x, playerShip.position.y + 3.0f, playerShip.position.z - 10.0f);
+    void Start()
+    {
+        Vector3 angles = transform.eulerAngles;
+        x = angles.y;
+        y = angles.x;
     }
-	
-	// Update is called once per frame
-	void LateUpdate () {
-        offX = (Quaternion.AngleAxis(Input.GetAxis("Mouse X") * turnSpeed, Vector3.up) * offset);
-        offY = (Quaternion.AngleAxis(Input.GetAxis("Mouse Y") * turnSpeed, Vector3.right) * offset);
-        //offset = (Quaternion.AngleAxis(Input.GetAxis("Mouse Y") * turnSpeed, Vector3.right) * offset);
-        transform.position = playerShip.position + offX;
-        transform.LookAt(playerShip.position);
-	}
+
+    void LateUpdate()
+    {
+        if (target)
+        {
+            x += Input.GetAxis("Mouse X") * xSpeed * distance * 0.02f;
+            y -= Input.GetAxis("Mouse Y") * ySpeed * 0.02f;
+            y = ClampAngle(y, yMinLimit, yMaxLimit);
+
+            Quaternion rotation = Quaternion.Euler(y, x, 0);
+            Vector3 negDistance = new Vector3(0.0f, 0.0f, -distance);
+            Vector3 position = rotation * negDistance + target.position;
+
+            distance = Mathf.Clamp(distance - Input.GetAxis("Mouse ScrollWheel") * 5, distanceMin, distanceMax);
+
+            RaycastHit hit;
+            if (Physics.Linecast(target.position, transform.position, out hit))
+            {
+                distance = Mathf.Lerp(distance, hit.distance, Time.deltaTime * zSpeed);
+            }            
+
+            transform.rotation = rotation;
+            transform.position = position;
+        }
+    }
+
+    public static float ClampAngle(float angle, float min, float max)
+    {
+        if (angle < -360F)
+            angle += 360F;
+        if (angle > 360F)
+            angle -= 360F;
+        return Mathf.Clamp(angle, min, max);
+    }
 }
