@@ -4,7 +4,7 @@ using System.Collections;
 public class PlayerControls : MonoBehaviour {
 
     // Physics Model
-    private Rigidbody rigidbody;
+    new Rigidbody rigidbody;
 
     // Base Velocity
     private float velocity = 12.0f;
