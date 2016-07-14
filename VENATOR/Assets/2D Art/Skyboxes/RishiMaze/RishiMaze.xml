@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<spacescapelayers>
+    <layer>
+        <dataFile></dataFile>
+        <destBlendFactor>one</destBlendFactor>
+        <farColor>0.870588 0.4 0.847059 1</farColor>
+        <hdrMultiplier>1</hdrMultiplier>
+        <hdrPower>1</hdrPower>
+        <maskEnabled>true</maskEnabled>
+        <maskGain>0.5</maskGain>
+        <maskLacunarity>2</maskLacunarity>
+        <maskNoiseType></maskNoiseType>
+        <maskOctaves>6</maskOctaves>
+        <maskOffset>1</maskOffset>
+        <maskPower>1</maskPower>
+        <maskScale>1</maskScale>
+        <maskSeed>1</maskSeed>
+        <maskThreshold>0.06</maskThreshold>
+        <maxSize>0.08</maxSize>
+        <minSize>0.002</minSize>
+        <name>Billboarding</name>
+        <nearColor>0.47451 0.815686 1 1</nearColor>
+        <numBillboards>35</numBillboards>
+        <seed>3</seed>
+        <sourceBlendFactor>one</sourceBlendFactor>
+        <texture>C:/Users/Ross McIntyre/Desktop/SpaceScape/media/materials/textures/flare-blue-purple3.png</texture>
+        <type>billboards</type>
+    </layer>
+    <layer>
+        <destBlendFactor>one</destBlendFactor>
+        <farColor>0.501961 0.407843 0.419608 1</farColor>
+        <hdrMultiplier>1</hdrMultiplier>
+        <hdrPower>1</hdrPower>
+        <maskEnabled>false</maskEnabled>
+        <maskGain>0.5</maskGain>
+        <maskLacunarity>2</maskLacunarity>
+        <maskNoiseType>fbm</maskNoiseType>
+        <maskOctaves>1</maskOctaves>
+        <maskOffset>1</maskOffset>
+        <maskPower>1</maskPower>
+        <maskScale>1</maskScale>
+        <maskSeed>1</maskSeed>
+        <maskThreshold>0</maskThreshold>
+        <name>Stars</name>
+        <nearColor>1 1 0.760784 1</nearColor>
+        <numPoints>300</numPoints>
+        <pointSize>1</pointSize>
+        <seed>0</seed>
+        <sourceBlendFactor>one</sourceBlendFactor>
+        <type>points</type>
+    </layer>
+    <layer>
+        <destBlendFactor>one</destBlendFactor>
+        <ditherAmount>0.005</ditherAmount>
+        <gain>0.8</gain>
+        <hdrMultiplier>1</hdrMultiplier>
+        <hdrPower>1</hdrPower>
+        <innerColor>0.980392 0.85098 0.694118 1</innerColor>
+        <lacunarity>3</lacunarity>
+        <name>DustCloud</name>
+        <noiseType>fbm</noiseType>
+        <octaves>6</octaves>
+        <offset>2</offset>
+        <outerColor>0 0 0 1</outerColor>
+        <powerAmount>1</powerAmount>
+        <previewTextureSize>128</previewTextureSize>
+        <scale>0.05</scale>
+        <seed>0</seed>
+        <shelfAmount>0.5</shelfAmount>
+        <sourceBlendFactor>one</sourceBlendFactor>
+        <type>noise</type>
+    </layer>
+    <layer>
+        <destBlendFactor>one</destBlendFactor>
+        <ditherAmount>0.02</ditherAmount>
+        <gain>1</gain>
+        <hdrMultiplier>1</hdrMultiplier>
+        <hdrPower>1</hdrPower>
+        <innerColor>0.160784 0.168627 0.203922 1</innerColor>
+        <lacunarity>3</lacunarity>
+        <name>Nebula</name>
+        <noiseType>fbm</noiseType>
+        <octaves>1</octaves>
+        <offset>1</offset>
+        <outerColor>0.00392157 0 0.176471 1</outerColor>
+        <powerAmount>1</powerAmount>
+        <previewTextureSize>128</previewTextureSize>
+        <scale>2</scale>
+        <seed>0</seed>
+        <shelfAmount>0.01</shelfAmount>
+        <sourceBlendFactor>one</sourceBlendFactor>
+        <type>noise</type>
+    </layer>
+</spacescapelayers>

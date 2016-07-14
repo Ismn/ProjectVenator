@@ -3,11 +3,20 @@ using System.Collections;
 
 public class PlayerControls : MonoBehaviour {
 
+    public GameObject laserBolt;
+    public Transform blasterSpawn;
+    private float loadRate = 0.5f;
+    public float fireRate;
+
+    public AudioSource blasterSound;
+    public float pitchMin = 0.95f;
+    public float pitchMax = 1.05f;
+
     // Physics Model
-    new Rigidbody rigidbody;
+    Rigidbody shipRBody;
 
     // Base Velocity
-    private float velocity = 12.0f;
+    private float velocity = 100.0f;
 
     // Directional Inputs
     private float thrustInput;
@@ -19,19 +28,33 @@ public class PlayerControls : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
+        blasterSound = GetComponent<AudioSource>();
+
         if (GetComponent<Rigidbody>())
         {
-            rigidbody = GetComponent<Rigidbody>();
+            shipRBody = GetComponent<Rigidbody>();
         }
         else
         {
-            Debug.LogError("Ship does not have an attahed rBody!");
+            Debug.LogError("Ship does not have an attached rBody!");
         }
-}
+
+        //audio.pitch = Random.Range(pitchMin, pitchMax);
+    }
 
     // Update is called once per frame
     void Update()
     {
+        blasterSound.pitch = Random.Range(pitchMin, pitchMax);
+
+        // Weapon Controls
+        if (Input.GetButton("LMB") && Time.time > loadRate)
+        {
+            loadRate = Time.time + fireRate;
+            Instantiate(laserBolt, blasterSpawn.position, blasterSpawn.rotation);
+            blasterSound.Play();
+        }
+
         // Find the corresponding inputs
         thrustInput = (Input.GetAxis("Thrust"));
         yawInput = (Input.GetAxis("Yaw"));
@@ -43,18 +66,18 @@ public class PlayerControls : MonoBehaviour {
     void FixedUpdate ()
     {
         // Thrust Physics
-        rigidbody.AddRelativeForce(Vector3.forward * thrustInput * velocity);
+        shipRBody.AddRelativeForce(Vector3.forward * thrustInput * velocity);
         // Yaw Physics
-        rigidbody.AddRelativeTorque(0, yawInput, 0);
+        shipRBody.AddRelativeTorque(0, yawInput, 0);
         // Strafe Physics
-        rigidbody.AddRelativeForce(Vector3.right * strafeInput * velocity);
+        shipRBody.AddRelativeForce(Vector3.right * strafeInput * velocity);
         // Pitch Physics
-        rigidbody.AddRelativeForce(Vector3.up * pitchInput * velocity);
-        rigidbody.AddRelativeTorque(Vector3.left * pitchInput);
+        shipRBody.AddRelativeForce(Vector3.up * pitchInput * velocity);
+        shipRBody.AddRelativeTorque(Vector3.left * pitchInput);
     }
 
     void Tracker()
     {
-        Debug.Log(rigidbody.velocity.magnitude);
+        Debug.Log(shipRBody.velocity.magnitude);
     }
 }
