@@ -6,6 +6,7 @@ public class Projectiles : MonoBehaviour {
     Rigidbody rbody;
     public float speed;
 
+    /// Use this for initialization
     void Start()
     {
         if (GetComponent<Rigidbody>())
