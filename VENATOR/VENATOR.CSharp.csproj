@@ -76,7 +76,6 @@
     <Compile Include="Assets\Scripts\GUI Cursor.cs" />
     <Compile Include="Assets\Scripts\PlayerControls.cs" />
     <Compile Include="Assets\Scripts\Projectiles.cs" />
-    <Compile Include="Assets\Scripts\TestFlight.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\2D Art\Skyboxes\RishiMaze\RishiMaze.xml" />
