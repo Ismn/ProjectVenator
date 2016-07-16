@@ -17,8 +17,7 @@ public class PlayerControls : MonoBehaviour {
 
     // Physics Model
     Rigidbody shipRBody;
-    float stability = 0.4f;
-    float speed = 5.0f;
+    float stability = 1.0f;
 
     // Base Velocity
     private float thrustVelocity = 100.0f;
@@ -32,8 +31,7 @@ public class PlayerControls : MonoBehaviour {
 
     /// Use this for initialization
     void Start ()
-    {    
-
+    {
         blasterSound = GetComponent<AudioSource>(); // Do we have at least one audio source?
 
         if (GetComponent<Rigidbody>()) // Check we have a rigidbody assigned to the ship.
@@ -69,7 +67,7 @@ public class PlayerControls : MonoBehaviour {
     /// FixedUpdate is called once per physics check
     void FixedUpdate ()
     {
-        Vector3 predictuedUp = Quaternion.AngleAxis(shipRBody.angularVelocity.magnitude * Mathf.Rad2Deg * stability / speed, shipRBody.angularVelocity) * transform.up;
+        Vector3 predictuedUp = Quaternion.AngleAxis(shipRBody.angularVelocity.magnitude * Mathf.Rad2Deg * stability / pitchVelocity, shipRBody.angularVelocity) * transform.up;
 
         //// Thrust Physics
         shipRBody.AddRelativeForce(Vector3.forward * thrustInput * thrustVelocity);
@@ -84,16 +82,8 @@ public class PlayerControls : MonoBehaviour {
         if (pitchInput == 0)
         {
             Vector3 torqueVector = Vector3.Cross(predictuedUp, Vector3.up);
-            shipRBody.AddRelativeTorque(torqueVector * speed);
+            torqueVector = Vector3.Project(torqueVector, transform.right);
+            shipRBody.AddTorque(torqueVector * pitchVelocity);
         }
-    }
-
-    void Tracker()
-    {
-        //Debug.Log(shipRBody.velocity.magnitude);
-        //Debug.Log(thrustInput);
-        //Debug.Log(yawInput);
-        //Debug.Log(strafeInput);
-        //Debug.Log(pitchInput);
     }
 }
