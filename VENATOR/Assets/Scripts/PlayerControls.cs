@@ -17,11 +17,10 @@ public class PlayerControls : MonoBehaviour {
 
     // Physics Model
     Rigidbody shipRBody;
-    float stability = 1.0f;
 
     // Base Velocity
     private float thrustVelocity = 100.0f;
-    private float pitchVelocity = 10.0f;
+    private float pitchYawVelocity = 10.0f;
 
     // Directional Inputs
     private float thrustInput;
@@ -67,23 +66,13 @@ public class PlayerControls : MonoBehaviour {
     /// FixedUpdate is called once per physics check
     void FixedUpdate ()
     {
-        Vector3 predictuedUp = Quaternion.AngleAxis(shipRBody.angularVelocity.magnitude * Mathf.Rad2Deg * stability / pitchVelocity, shipRBody.angularVelocity) * transform.up;
-
         //// Thrust Physics
         shipRBody.AddRelativeForce(Vector3.forward * thrustInput * thrustVelocity);
         //// Yaw Physics
-        shipRBody.AddRelativeTorque(0, yawInput, 0);
+        shipRBody.AddRelativeTorque(0, pitchYawVelocity * yawInput, 0);
         //// Strafe Physics
         shipRBody.AddRelativeForce(Vector3.right * strafeInput * thrustVelocity);
         //// Pitch Physics
-        shipRBody.AddRelativeForce(Vector3.up * pitchInput * pitchVelocity);
-        shipRBody.AddRelativeTorque(Vector3.left * pitchInput * pitchVelocity);
-
-        if (pitchInput == 0)
-        {
-            Vector3 torqueVector = Vector3.Cross(predictuedUp, Vector3.up);
-            torqueVector = Vector3.Project(torqueVector, transform.right);
-            shipRBody.AddTorque(torqueVector * pitchVelocity);
-        }
+        shipRBody.AddRelativeForce(Vector3.up * pitchInput * pitchYawVelocity);
     }
 }
