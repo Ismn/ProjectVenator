@@ -1,14 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerControls : MonoBehaviour {
 
     // Weapons Stuff
-    public GameObject laserBolt;
-    public GameObject horizon;
+    public GameObject laserBolt;    
     public Transform blasterSpawn;
     private float loadRate = 0.5f;
     public float fireRate;
+    static int batteryIndexPointer;
+    private Transform activeGun;
+    public List <Transform> gunBattery = new List<Transform>();
 
     // Audio
     public AudioSource blasterSound;
@@ -17,6 +20,7 @@ public class PlayerControls : MonoBehaviour {
 
     // Physics Model
     Rigidbody shipRBody;
+    public GameObject horizon;
 
     // Base Velocity
     private float thrustVelocity = 100.0f;
@@ -41,20 +45,37 @@ public class PlayerControls : MonoBehaviour {
         {
             Debug.LogError("Ship does not have an attached rBody!"); // Else, throw out an error.
         }
+        batteryIndexPointer = 0;
     }
 
     /// Update is called once per frame
     void Update()
     {
-        blasterSound.pitch = Random.Range(pitchMin, pitchMax); // Allow for a small variance in pitch every time we fire a blaster shot.     
-
-        // Weapon Controls
-        if (Input.GetButton("LMB") && Time.time > loadRate)
+        // Weapon Controls 
+        blasterSound.pitch = Random.Range(pitchMin, pitchMax); // Allow for a small variance in pitch every time we fire a blaster shot.   
+        activeGun = gunBattery[batteryIndexPointer];
+        foreach (Transform gun in gunBattery)
         {
-            loadRate = Time.time + fireRate;
-            Instantiate(laserBolt, blasterSpawn.position, blasterSpawn.rotation);
-            blasterSound.Play();
+            if (Time.time > loadRate)
+            {
+               loadRate = Time.time + fireRate;
+
+                if (Input.GetButton("LMB"))
+                {
+                    Instantiate(laserBolt, activeGun.position, activeGun.rotation);
+                    blasterSound.Play();
+                    batteryIndexPointer++;
+                }
+                else
+                    batteryIndexPointer = 0;
+
+                if (batteryIndexPointer >= gunBattery.Count)
+                {
+                    batteryIndexPointer = 0;
+                }
+            }
         }
+        // Debug.Log(batteryIndexPointer);
 
         // Find the corresponding inputs - See Input Manager for the keybinds to the above axes.
         thrustInput = (Input.GetAxis("Thrust"));
