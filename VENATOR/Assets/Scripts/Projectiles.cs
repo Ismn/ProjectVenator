@@ -1,47 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
-public abstract class Projectiles : MonoBehaviour
+public abstract class Projectiles
 {
-    // Physics
-    Rigidbody rbody;
-    protected float projectileSpeed;
-    public abstract float GetSpeed();
-
-    // Visuals
-
-    // Audio
-    public AudioSource weaponSFX;
-
-    /// Use this for initialization
-    void Start()
-    {
-        if (GetComponent<Rigidbody>())
-        {
-            rbody = GetComponent<Rigidbody>();
-        }
-        else
-        {
-            Debug.LogError("A projectile does not have an attached rBody!");
-        }
-    }
-
-    void Awake()
-    {
-        projectileSpeed = GetSpeed();
-        weaponSFX.Play();
-    }
-
-    void FixedUpdate()
-    {
-        rbody.velocity = transform.forward * projectileSpeed;
-    }
-}
-
-public class RebLightBlaster : Projectiles
-{
-    public float speed;
-    public AudioClip xWing;
-
-    public override float GetSpeed(){ return speed; }
+    public float projectileSpeed;
+    public int shieldDamage;
+    public int hullDamage;
+    Rigidbody rBody;
 }
