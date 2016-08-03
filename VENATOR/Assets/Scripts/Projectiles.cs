@@ -1,13 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Projectiles : MonoBehaviour {
-
+public abstract class Projectiles : MonoBehaviour
+{
+    // Physics
     Rigidbody rbody;
-    public float speed;
+    protected float projectileSpeed;
+    public abstract float GetSpeed();
+
+    // Visuals
+
+    // Audio
+    public AudioSource weaponSFX;
 
     /// Use this for initialization
-    void Awake()
+    void Start()
     {
         if (GetComponent<Rigidbody>())
         {
@@ -15,12 +22,26 @@ public class Projectiles : MonoBehaviour {
         }
         else
         {
-            Debug.LogError("Projectile does not have an attached rBody!");
-        }       
+            Debug.LogError("A projectile does not have an attached rBody!");
+        }
+    }
+
+    void Awake()
+    {
+        projectileSpeed = GetSpeed();
+        weaponSFX.Play();
     }
 
     void FixedUpdate()
     {
-        rbody.velocity = transform.forward * speed;
+        rbody.velocity = transform.forward * projectileSpeed;
     }
+}
+
+public class RebLightBlaster : Projectiles
+{
+    public float speed;
+    public AudioClip xWing;
+
+    public override float GetSpeed(){ return speed; }
 }

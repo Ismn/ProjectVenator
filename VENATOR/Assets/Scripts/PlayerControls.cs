@@ -21,7 +21,6 @@ public class PlayerControls : MonoBehaviour {
 
     // Physics Model
     Rigidbody shipRBody;
-    public GameObject horizon;
 
     // Base Velocity
     private float thrustVelocity = 100.0f;
