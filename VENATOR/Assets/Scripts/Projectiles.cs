@@ -7,7 +7,7 @@ public class Projectiles : MonoBehaviour {
     public float speed;
 
     /// Use this for initialization
-    void Start()
+    void Awake()
     {
         if (GetComponent<Rigidbody>())
         {
@@ -16,8 +16,11 @@ public class Projectiles : MonoBehaviour {
         else
         {
             Debug.LogError("Projectile does not have an attached rBody!");
-        }
+        }       
+    }
 
-        rbody.velocity = transform.forward * speed;        
+    void FixedUpdate()
+    {
+        rbody.velocity = transform.forward * speed;
     }
 }
