@@ -6,7 +6,6 @@ public class PlayerControls : MonoBehaviour {
 
     // Weapons Stuff
     public GameObject laserBolt;    
-    public Transform blasterSpawn;
     private Transform activeGun;
     public List<Transform> gunBattery = new List<Transform>();
     static int batteryIndexPointer;
@@ -14,10 +13,14 @@ public class PlayerControls : MonoBehaviour {
     public float fireRate;
     private float loadRate = 0.5f;
 
+    // Ammo Pool
+    private int pooledAmount = 12;
+    List<GameObject> shots;
+
     // Audio
-    public AudioSource blasterSound;
-    public float pitchMin = 0.95f;
-    public float pitchMax = 1.05f;
+    AudioSource shotSound;
+    private float pitchMin = 0.95f;
+    private float pitchMax = 1.06f;
 
     // Physics Model
     Rigidbody shipRBody;
@@ -35,9 +38,17 @@ public class PlayerControls : MonoBehaviour {
     /// Use this for initialization
     void Start ()
     {
+        shots = new List<GameObject>();
+        for (int i = 0; i < pooledAmount; i++)
+        {
+            GameObject o = Instantiate(laserBolt);
+            o.SetActive(false);
+            shots.Add(o);
+        }
+
         rotationSpeed = rotationSpeed * Time.deltaTime;
 
-        blasterSound = GetComponent<AudioSource>(); // Do we have at least one audio source?
+        shotSound = GetComponent<AudioSource>(); // Do we have at least one audio source?
 
         if (GetComponent<Rigidbody>()) // Check we have a rigidbody assigned to the ship.
         {
@@ -54,7 +65,7 @@ public class PlayerControls : MonoBehaviour {
     void Update()
     {
         // Weapon Controls 
-        blasterSound.pitch = Random.Range(pitchMin, pitchMax); // Allow for a small variance in pitch every time we fire a blaster shot.   
+        shotSound.pitch = Random.Range(pitchMin, pitchMax); // Allow for a small variance in pitch every time we fire a shot shot.   
         activeGun = gunBattery[batteryIndexPointer];
         foreach (Transform gun in gunBattery)
         {
@@ -66,8 +77,7 @@ public class PlayerControls : MonoBehaviour {
 
                 if (Input.GetButton("LMB"))
                 {
-                    Instantiate(laserBolt, activeGun.position, activeGun.rotation);
-                    blasterSound.Play();
+                    FireWeapon();
                     batteryIndexPointer++;
                 }
                 else
@@ -99,5 +109,20 @@ public class PlayerControls : MonoBehaviour {
         shipRBody.AddRelativeForce(Vector3.right * strafeInput * thrustVelocity);
         //// Pitch Physics
         shipRBody.AddRelativeForce(Vector3.up * pitchInput * pitchYawVelocity);
+    }
+
+    void FireWeapon()
+    {
+        for (int i = 0; i < shots.Count; i++)
+        {
+            if (!shots[i].activeInHierarchy)
+            {
+                shots[i].transform.position = activeGun.position;
+                shots[i].transform.rotation = activeGun.rotation;
+                shots[i].SetActive(true);
+                shotSound.Play();
+                break;
+            }
+        }
     }
 }
