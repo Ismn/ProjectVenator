@@ -4,37 +4,59 @@ using System.Collections.Generic;
 
 public class PlayerControls : MonoBehaviour {
 
-    // Weapons Stuff    
-    private Transform activeGun;
-    public List<Transform> gunBattery = new List<Transform>();
-    static int batteryIndexPointer;
-    public float rotationSpeed;
-    public float fireRate;
-    private float loadRate = 0.5f;
+    /*******************
+     * Weapons Stuff
+     *******************/
+    // Primary Weapon  
+    private Transform activePrimaryGun;
+    public List<Transform> primaryGunBattery = new List<Transform>();
+    static int primaryBatteryIndex;
+    public float primaryRotationSpeed;
+    public float primaryFireRate;
+    private float primaryLoadRate = 0.5f;
 
-    // Ammo Pool
-    /// Primary Weapon
+    // Secondary Weapon
+    private Transform activeSecondaryGun;
+    public List<Transform> secondaryGunBattery = new List<Transform>();
+    static int secondaryBatteryIndex;
+    public float secondaryRotationSpeed;
+    public float secondaryFireRate;
+    private float secondaryLoadRate = 0.5f;
+
+    /*******************
+     * Ammo Pool
+     *******************/
+    // Primary Weapon
     private int primaryPool = 12;
     List<GameObject> primaryFire;
     public GameObject primaryAttack;
-    /// Secondary Weapon
+
+    // Secondary Weapon
     private int secondaryPool = 12;
     List<GameObject> secondaryFire;
     public GameObject secondaryAttack;
 
-    // Audio
+    /*******************
+     * Audio
+     *******************/
     //AudioSource engineSound;
     //private float pitchMin = 0.95f;
     //private float pitchMax = 1.06f;
 
-    // Physics Model
+    /*******************
+     * Physics Model
+     *******************/
     Rigidbody shipRBody;
 
-    // Base Velocity
+    /*******************
+     * Base Velocity
+     *******************/
     private float thrustVelocity = 100.0f;
     private float pitchYawVelocity = 34.0f;
 
-    // Directional Inputs
+    /*******************
+    * Directional Inputs
+    *******************/
     private float thrustInput;
     private float yawInput;
     private float strafeInput;
@@ -59,7 +81,8 @@ public class PlayerControls : MonoBehaviour {
             secondaryFire.Add(o);
         }
 
-        rotationSpeed = rotationSpeed * Time.deltaTime;
+        primaryRotationSpeed = primaryRotationSpeed * Time.deltaTime;
+        secondaryRotationSpeed = secondaryRotationSpeed * Time.deltaTime;
 
         //engineSound = GetComponent<AudioSource>(); // Do we have at least one audio source?
 
@@ -71,47 +94,62 @@ public class PlayerControls : MonoBehaviour {
         {
             Debug.LogError("Ship does not have an attached rBody!"); // Else, throw out an error.
         }
-        batteryIndexPointer = 0;
+        primaryBatteryIndex = 0;
+        secondaryBatteryIndex = 0;
     }
 
     /// Update is called once per frame
     void Update()
     {
-        // Weapon Controls 
-        activeGun = gunBattery[batteryIndexPointer];
-        foreach (Transform gun in gunBattery)
+        // Primary Weapon Controls 
+        activePrimaryGun = primaryGunBattery[primaryBatteryIndex];
+        foreach (Transform pGun in primaryGunBattery)
         {
-            gun.transform.rotation = Quaternion.Slerp(gun.transform.rotation, Camera.main.transform.rotation, rotationSpeed);
+            pGun.transform.rotation = Quaternion.Slerp(pGun.transform.rotation, Camera.main.transform.rotation, primaryRotationSpeed);
 
-            if (Time.time > loadRate)
+            if (Time.time > primaryLoadRate)
             {
-                loadRate = Time.time + fireRate;
+                primaryLoadRate = Time.time + primaryFireRate;
 
                 if (Input.GetButton("LMB"))
                 {
                     FirePrimary();
-                    batteryIndexPointer++;
+                    primaryBatteryIndex++;
                 }
-                else {
-                batteryIndexPointer = 0;
-                }
+                else
+                    primaryBatteryIndex = 0;
 
-                if (Input.GetButton("RMB"))
+                if (primaryBatteryIndex >= primaryGunBattery.Count)
                 {
-                    FireSecondary();
-                    batteryIndexPointer++;
-                }
-                else {
-                    batteryIndexPointer = 0;
-                }
-
-                if (batteryIndexPointer >= gunBattery.Count)
-                {
-                    batteryIndexPointer = 0;
+                    primaryBatteryIndex = 0;
                 }
             }
         }
-        // Debug.Log(batteryIndexPointer);
+
+        // Secondary Weapon Controls 
+        activeSecondaryGun = secondaryGunBattery[secondaryBatteryIndex];
+        foreach (Transform sGun in secondaryGunBattery)
+        {
+            sGun.transform.rotation = Quaternion.Slerp(sGun.transform.rotation, Camera.main.transform.rotation, secondaryRotationSpeed);
+
+            if (Time.time > secondaryLoadRate)
+            {
+                secondaryLoadRate = Time.time + secondaryFireRate;
+
+                if (Input.GetButton("R"))
+                {
+                    FireSecondary();
+                    secondaryBatteryIndex++;
+                }
+                else
+                    secondaryBatteryIndex = 0;
+
+                if (secondaryBatteryIndex >= secondaryGunBattery.Count)
+                {
+                    secondaryBatteryIndex = 0;
+                }
+            }
+        }
 
         // Find the corresponding inputs - See Input Manager for the keybinds to the above axes.
         thrustInput = (Input.GetAxis("Thrust"));
@@ -139,8 +177,8 @@ public class PlayerControls : MonoBehaviour {
         {
             if (!primaryFire[i].activeInHierarchy)
             {
-                primaryFire[i].transform.position = activeGun.position;
-                primaryFire[i].transform.rotation = activeGun.rotation;
+                primaryFire[i].transform.position = activePrimaryGun.position;
+                primaryFire[i].transform.rotation = activePrimaryGun.rotation;
                 primaryFire[i].SetActive(true);
                 break;
             }
@@ -153,8 +191,8 @@ public class PlayerControls : MonoBehaviour {
         {
             if (!secondaryFire[i].activeInHierarchy)
             {
-                secondaryFire[i].transform.position = activeGun.position;
-                secondaryFire[i].transform.rotation = activeGun.rotation;
+                secondaryFire[i].transform.position = activeSecondaryGun.position;
+                secondaryFire[i].transform.rotation = activeSecondaryGun.rotation;
                 secondaryFire[i].SetActive(true);
                 break;
             }
