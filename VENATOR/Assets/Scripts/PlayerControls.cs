@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class PlayerControls : MonoBehaviour {
 
     // Weapons Stuff
-    public GameObject laserBolt;    
+    public GameObject primaryFire;    
     private Transform activeGun;
     public List<Transform> gunBattery = new List<Transform>();
     static int batteryIndexPointer;
@@ -18,16 +18,16 @@ public class PlayerControls : MonoBehaviour {
     List<GameObject> shots;
 
     // Audio
-    AudioSource shotSound;
-    private float pitchMin = 0.95f;
-    private float pitchMax = 1.06f;
+    //AudioSource engineSound;
+    //private float pitchMin = 0.95f;
+    //private float pitchMax = 1.06f;
 
     // Physics Model
     Rigidbody shipRBody;
 
     // Base Velocity
     private float thrustVelocity = 100.0f;
-    private float pitchYawVelocity = 10.0f;
+    private float pitchYawVelocity = 34.0f;
 
     // Directional Inputs
     private float thrustInput;
@@ -41,14 +41,14 @@ public class PlayerControls : MonoBehaviour {
         shots = new List<GameObject>();
         for (int i = 0; i < pooledAmount; i++)
         {
-            GameObject o = Instantiate(laserBolt);
+            GameObject o = Instantiate(primaryFire);
             o.SetActive(false);
             shots.Add(o);
         }
 
         rotationSpeed = rotationSpeed * Time.deltaTime;
 
-        shotSound = GetComponent<AudioSource>(); // Do we have at least one audio source?
+        //engineSound = GetComponent<AudioSource>(); // Do we have at least one audio source?
 
         if (GetComponent<Rigidbody>()) // Check we have a rigidbody assigned to the ship.
         {
@@ -65,7 +65,6 @@ public class PlayerControls : MonoBehaviour {
     void Update()
     {
         // Weapon Controls 
-        shotSound.pitch = Random.Range(pitchMin, pitchMax); // Allow for a small variance in pitch every time we fire a shot shot.   
         activeGun = gunBattery[batteryIndexPointer];
         foreach (Transform gun in gunBattery)
         {
@@ -101,13 +100,13 @@ public class PlayerControls : MonoBehaviour {
     /// FixedUpdate is called once per physics check
     void FixedUpdate ()
     {
-        //// Thrust Physics
+        /// Thrust Physics
         shipRBody.AddRelativeForce(Vector3.forward * thrustInput * thrustVelocity);
-        //// Yaw Physics
+        /// Yaw Physics
         shipRBody.AddRelativeTorque(0, pitchYawVelocity * yawInput, 0);
-        //// Strafe Physics
+        /// Strafe Physics
         shipRBody.AddRelativeForce(Vector3.right * strafeInput * thrustVelocity);
-        //// Pitch Physics
+        /// Pitch Physics
         shipRBody.AddRelativeForce(Vector3.up * pitchInput * pitchYawVelocity);
     }
 
@@ -120,7 +119,6 @@ public class PlayerControls : MonoBehaviour {
                 shots[i].transform.position = activeGun.position;
                 shots[i].transform.rotation = activeGun.rotation;
                 shots[i].SetActive(true);
-                shotSound.Play();
                 break;
             }
         }
