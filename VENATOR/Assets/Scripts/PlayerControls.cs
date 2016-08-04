@@ -4,8 +4,7 @@ using System.Collections.Generic;
 
 public class PlayerControls : MonoBehaviour {
 
-    // Weapons Stuff
-    public GameObject primaryFire;    
+    // Weapons Stuff    
     private Transform activeGun;
     public List<Transform> gunBattery = new List<Transform>();
     static int batteryIndexPointer;
@@ -14,8 +13,14 @@ public class PlayerControls : MonoBehaviour {
     private float loadRate = 0.5f;
 
     // Ammo Pool
-    private int pooledAmount = 12;
-    List<GameObject> shots;
+    /// Primary Weapon
+    private int primaryPool = 12;
+    List<GameObject> primaryFire;
+    public GameObject primaryAttack;
+    /// Secondary Weapon
+    private int secondaryPool = 12;
+    List<GameObject> secondaryFire;
+    public GameObject secondaryAttack;
 
     // Audio
     //AudioSource engineSound;
@@ -38,12 +43,20 @@ public class PlayerControls : MonoBehaviour {
     /// Use this for initialization
     void Start ()
     {
-        shots = new List<GameObject>();
-        for (int i = 0; i < pooledAmount; i++)
+        primaryFire = new List<GameObject>();
+        for (int i = 0; i < primaryPool; i++)
         {
-            GameObject o = Instantiate(primaryFire);
+            GameObject o = Instantiate(primaryAttack);
             o.SetActive(false);
-            shots.Add(o);
+            primaryFire.Add(o);
+        }
+
+        secondaryFire = new List<GameObject>();
+        for (int i = 0; i < secondaryPool; i++)
+        {
+            GameObject o = Instantiate(secondaryAttack);
+            o.SetActive(false);
+            secondaryFire.Add(o);
         }
 
         rotationSpeed = rotationSpeed * Time.deltaTime;
@@ -72,15 +85,25 @@ public class PlayerControls : MonoBehaviour {
 
             if (Time.time > loadRate)
             {
-               loadRate = Time.time + fireRate;
+                loadRate = Time.time + fireRate;
 
                 if (Input.GetButton("LMB"))
                 {
-                    FireWeapon();
+                    FirePrimary();
                     batteryIndexPointer++;
                 }
-                else
+                else {
+                batteryIndexPointer = 0;
+                }
+
+                if (Input.GetButton("RMB"))
+                {
+                    FireSecondary();
+                    batteryIndexPointer++;
+                }
+                else {
                     batteryIndexPointer = 0;
+                }
 
                 if (batteryIndexPointer >= gunBattery.Count)
                 {
@@ -110,15 +133,29 @@ public class PlayerControls : MonoBehaviour {
         shipRBody.AddRelativeForce(Vector3.up * pitchInput * pitchYawVelocity);
     }
 
-    void FireWeapon()
+    void FirePrimary()
     {
-        for (int i = 0; i < shots.Count; i++)
+        for (int i = 0; i < primaryFire.Count; i++)
         {
-            if (!shots[i].activeInHierarchy)
+            if (!primaryFire[i].activeInHierarchy)
             {
-                shots[i].transform.position = activeGun.position;
-                shots[i].transform.rotation = activeGun.rotation;
-                shots[i].SetActive(true);
+                primaryFire[i].transform.position = activeGun.position;
+                primaryFire[i].transform.rotation = activeGun.rotation;
+                primaryFire[i].SetActive(true);
+                break;
+            }
+        }
+    }
+
+    void FireSecondary()
+    {
+        for (int i = 0; i < secondaryFire.Count; i++)
+        {
+            if (!secondaryFire[i].activeInHierarchy)
+            {
+                secondaryFire[i].transform.position = activeGun.position;
+                secondaryFire[i].transform.rotation = activeGun.rotation;
+                secondaryFire[i].SetActive(true);
                 break;
             }
         }
