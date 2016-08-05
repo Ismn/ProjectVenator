@@ -179,6 +179,7 @@ public class PlayerControls : MonoBehaviour {
             {
                 primaryFire[i].transform.position = activePrimaryGun.position;
                 primaryFire[i].transform.rotation = activePrimaryGun.rotation;
+                activePrimaryGun.GetComponent<AudioSource>().Play();
                 primaryFire[i].SetActive(true);
                 break;
             }
@@ -193,6 +194,7 @@ public class PlayerControls : MonoBehaviour {
             {
                 secondaryFire[i].transform.position = activeSecondaryGun.position;
                 secondaryFire[i].transform.rotation = activeSecondaryGun.rotation;
+                activeSecondaryGun.GetComponent<AudioSource>().Play();
                 secondaryFire[i].SetActive(true);
                 break;
             }
